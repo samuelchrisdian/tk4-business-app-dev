@@ -43,6 +43,7 @@ public class ListNilai extends javax.swing.JFrame {
         tableNilai = new javax.swing.JTable();
         buttonAdd = new javax.swing.JButton();
         buttonEdit = new javax.swing.JButton();
+        buttonDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,20 +66,29 @@ public class ListNilai extends javax.swing.JFrame {
             }
         });
 
+        buttonDelete.setText("Delete");
+        buttonDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDeleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(labelTitle)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(buttonAdd)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonEdit)))
+                        .addComponent(buttonEdit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonDelete))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -88,7 +98,8 @@ public class ListNilai extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(labelTitle)
                     .addComponent(buttonAdd)
-                    .addComponent(buttonEdit))
+                    .addComponent(buttonEdit)
+                    .addComponent(buttonDelete))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 290, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(14, Short.MAX_VALUE))
@@ -114,12 +125,44 @@ public class ListNilai extends javax.swing.JFrame {
 
         editNIM = nim;
 
-        System.out.println(nim);
-
         EditNilai form = new EditNilai(this);
         form.show();
         dispose();
     }//GEN-LAST:event_buttonEditActionPerformed
+
+    private void buttonDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDeleteActionPerformed
+        int selectedRow = tableNilai.getSelectedRow();
+
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(null, "Pilih 1 Data dari Tabel untuk Didelete!");
+        }
+
+        String nim = tableNilai.getValueAt(selectedRow, 0).toString();
+
+        int jawab = JOptionPane.showConfirmDialog(this, "Yakin untuk delete data nilai NIM : " + nim + "?");
+
+        switch (jawab) {
+            case JOptionPane.YES_OPTION:
+                try {
+                    st = conn.createStatement();
+                    st.executeUpdate("DELETE FROM nilai WHERE nim='" + nim + "'");
+
+                    JOptionPane.showMessageDialog(null, "Hapus Data Nilai Berhasil!");
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+                break;
+            case JOptionPane.NO_OPTION:
+                JOptionPane.showMessageDialog(this, "Delete canceled!");
+                break;
+            case JOptionPane.CANCEL_OPTION:
+                JOptionPane.showMessageDialog(this, "Delete canceled!");
+        }
+
+        ListNilai fl = new ListNilai();
+        fl.show();
+        dispose();
+    }//GEN-LAST:event_buttonDeleteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -238,6 +281,7 @@ public class ListNilai extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonAdd;
+    private javax.swing.JButton buttonDelete;
     private javax.swing.JButton buttonEdit;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel labelTitle;
